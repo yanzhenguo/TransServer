@@ -1,7 +1,6 @@
-package cn.yan.entity;
+package cn.shu.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity

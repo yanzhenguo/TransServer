@@ -1,10 +1,10 @@
-package cn.yan.util;
+package cn.shu.util;
 
 import java.io.File;
 
 public class FileUtil {
     /**
-     * 列出目录下的文件
+     * 锟叫筹拷目录锟铰碉拷锟侥硷拷
      * @param root
      */
     public static void listDir(String root){

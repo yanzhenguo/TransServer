@@ -1,6 +1,6 @@
-package cn.yan.dao;
+package cn.shu.dao;
 
-import cn.yan.entity.Task;
+import cn.shu.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TaskDao extends JpaRepository<Task,Integer>{

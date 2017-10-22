@@ -1,22 +1,22 @@
-package cn.yan.util;
+package cn.shu.util;
 
 import java.util.Date;
 import java.util.Random;
 
 public class UserUtil {
 
-    //Éú³ÉÓÃ»§Ãû
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
     public static String generateUserName(String filmId){
         Date date = new Date();
         String dateTime = String.valueOf(date.getTime());
         return filmId+"_"+dateTime;
     }
 
-    //Éú³ÉËæ»úÃÜÂë
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     /**
      *
-     * @param n ÃÜÂë³¤¶È
+     * @param n ï¿½ï¿½ï¿½ë³¤ï¿½ï¿½
      * @return
      */
     public static String generatePass(int n){

@@ -1,20 +1,20 @@
-package cn.yan.action;
+package cn.shu.action;
 
-import cn.yan.dao.FilmDao;
-import cn.yan.dao.FilmFileDao;
-import cn.yan.dao.TaskDao;
-import cn.yan.dao.UserDao;
-import cn.yan.entity.Film;
-import cn.yan.entity.FilmFile;
-import cn.yan.entity.User;
-import cn.yan.util.UserUtil;
+import cn.shu.dao.FilmDao;
+import cn.shu.dao.FilmFileDao;
+import cn.shu.dao.TaskDao;
+import cn.shu.dao.UserDao;
+import cn.shu.entity.Film;
+import cn.shu.entity.FilmFile;
+import cn.shu.entity.User;
+import cn.shu.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +37,8 @@ public class IndexAction {
     FilmDao filmDao;
     @Autowired
     FilmFileDao filmFileDao;
+    @Value("${expire-date}")
+    private int expireDate;
     private static final Logger log = LoggerFactory.getLogger(IndexAction.class);
     @GetMapping(value = "/login")
     public String login(HttpServletRequest req){
@@ -48,7 +50,7 @@ public class IndexAction {
     }
 
     /**
-     * ÑéÖ¤ÓÃ»§ÃûºÍÃÜÂëÊÇ·ñÕıÈ·ÓĞĞ§
+     * éªŒè¯ç”¨æˆ·åå’Œå¯†ç æ˜¯å¦æ­£ç¡®æœ‰æ•ˆ
      * @param name
      * @param pass
      * @param req
@@ -67,15 +69,15 @@ public class IndexAction {
         ExampleMatcher matcher = ExampleMatcher.matching();
         Example<User> ex = Example.of(user, matcher);
         List<User> users = userDao.findAll(ex);
-        //ÈôÓÃ»§²»´æÔÚ£¬ÑéÖ¤²»Í¨¹ı
+        //è‹¥ç”¨æˆ·ä¸å­˜åœ¨ï¼ŒéªŒè¯ä¸é€šè¿‡
         if(users==null || users.size()==0) return "wrong";
         user = users.get(0);
-        //Èô¸ÃÓÃ»§ÒÑ¹ıÆÚ£¬ÑéÖ¤²»Í¨¹ı£¬²¢É¾³ı¸ÃÓÃ»§
+        //è‹¥è¯¥ç”¨æˆ·å·²è¿‡æœŸï¼ŒéªŒè¯ä¸é€šè¿‡ï¼Œå¹¶åˆ é™¤è¯¥ç”¨æˆ·
         if(user.getExpireDate().before(new Date())) {
             userDao.delete(user);
             return "expire";
         }
-        //ÑéÖ¤ÃÜÂëÊÇ·ñÕıÈ·
+        //éªŒè¯å¯†ç æ˜¯å¦æ­£ç¡®
         String realPass = user.getPasswd()+key;
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
@@ -94,26 +96,30 @@ public class IndexAction {
     }
 
     /**
-     * Ö÷Õ¾ÇëÇóÉú³ÉÓÃ»§ÃûÃÜÂë½Ó¿Ú
-     * @param filmId ½ÚÄ¿Id
-     * @return Éú³ÉµÄÓÃ»§ĞÅÏ¢
+     * ä¸»ç«™è¯·æ±‚ç”Ÿæˆç”¨æˆ·åå¯†ç æ¥å£
+     * @param filmId èŠ‚ç›®Idï¼Œå¤šä¸ªidç”¨åˆ†å·åˆ†éš”
+     * @return ç”Ÿæˆçš„ç”¨æˆ·ä¿¡æ¯
      */
 	@GetMapping(value = "/newTask")
-	public User newTask(@RequestParam("filmId") String filmId ){
-	    User user = new User();
-	    user.setFilmId(Integer.valueOf(filmId));
-	    user.setName(UserUtil.generateUserName(filmId));
-	    user.setPasswd(UserUtil.generatePass(16));
-	    Date date = new Date();
-	    user.setCreateDate(date);
-	    user.setUpdateDate(date);
-	    user.setExpireDate(new Date(date.getTime()+259200000L));
-	    User result = userDao.save(user);
-	    return result;
+	public List<User> newTask(@RequestParam("filmId") String filmId ){
+	    String[] fileIds = filmId.split(";");
+	    List<User> users = new ArrayList<User>();
+	    for(String id : fileIds){
+            User user = new User();
+            user.setFilmId(Integer.valueOf(id));
+            user.setName(UserUtil.generateUserName(id));
+            user.setPasswd(UserUtil.generatePass(16));
+            Date date = new Date();
+            user.setCreateDate(date);
+            user.setUpdateDate(date);
+            user.setExpireDate(new Date(date.getTime()+expireDate*3600000));
+            users.add(userDao.save(user));
+        }
+	    return users;
     }
 
     /**
-     * »ñÈ¡ÎÄ¼ş
+     * è·å–æ–‡ä»¶
      * @param filmId
      * @param fileName
      * @param offset
@@ -127,7 +133,7 @@ public class IndexAction {
                         HttpServletResponse res){
         HttpSession session = req.getSession();
         if(!session.getAttribute("isLogin").equals("true")) return;
-        //·µ»ØÎÄ¼ş
+        //è¿”å›æ–‡ä»¶
         Film film=new Film();
         film.setFilmId(filmId);
         ExampleMatcher matcher = ExampleMatcher.matching();
@@ -167,7 +173,7 @@ public class IndexAction {
     }
 
     /**
-     * ÉÏ´«ÎÄ¼ş
+     * ä¸Šä¼ æ–‡ä»¶
      * @param path
      * @param req
      */
@@ -207,13 +213,14 @@ public class IndexAction {
     }
 
     /**
-     * ·µ»Ø½ÚÄ¿Ïà¹ØÎÄ¼ş
+     * è¿”å›èŠ‚ç›®ç›¸å…³æ–‡ä»¶
      * @param filmId
      * @return
      */
     @GetMapping(value = "/getFileList")
     public List<FilmFile> getFileList(@RequestParam("filmId") String filmId,
                               HttpServletRequest req){
+        log.debug("request to search film files for film "+filmId);
         HttpSession session = req.getSession();
         String isLogin= (String)session.getAttribute("isLogin");
         if(isLogin==null || !isLogin.equals("true")) return null;
@@ -223,10 +230,12 @@ public class IndexAction {
         Example<Film> ex = Example.of(film, matcher);
         List<Film> films = filmDao.findAll(ex);
         if(films==null || films.size()==0) return null;
+        log.debug("film uuid is "+films.get(0).getUuid());
         FilmFile filmFile=new FilmFile();
         filmFile.setUuid(films.get(0).getUuid());
         Example<FilmFile> ex2 = Example.of(filmFile, matcher);
         List<FilmFile> filmFiles = filmFileDao.findAll(ex2);
+        log.debug("find "+filmFiles.size()+" files for film "+filmId);
         return filmFiles;
     }
 }

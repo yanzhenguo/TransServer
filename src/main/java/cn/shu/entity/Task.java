@@ -1,4 +1,4 @@
-package cn.yan.entity;
+package cn.shu.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +13,7 @@ public class Task {
     private Integer id;
     private String randomKey;
     private String path;
-    //state±íÊ¾ÈÎÎñ×´Ì¬£¬0£ºÎ´¿ªÊ¼£¬1£ºÕýÔÚ½øÐÐ£¬2£ºÒÑÍê³É
+    //stateï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½0ï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Ð£ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     private Integer state;
     private Date createTime;
     private Date updateTime;

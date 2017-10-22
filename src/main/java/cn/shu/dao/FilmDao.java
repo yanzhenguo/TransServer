@@ -1,6 +1,6 @@
-package cn.yan.dao;
+package cn.shu.dao;
 
-import cn.yan.entity.Film;
+import cn.shu.entity.Film;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FilmDao  extends JpaRepository<Film,String> {

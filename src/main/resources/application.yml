@@ -11,3 +11,4 @@ spring:
 logging:
   level:
     cn: debug
+expire-date: 36 #密码过期时间(单位：小时)
