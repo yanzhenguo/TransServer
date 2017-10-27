@@ -4,7 +4,7 @@ import java.io.File;
 
 public class FileUtil {
     /**
-     * �г�Ŀ¼�µ��ļ�
+     * 查找文件夹下的文件列表
      * @param root
      */
     public static void listDir(String root){

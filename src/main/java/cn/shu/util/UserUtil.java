@@ -5,19 +5,21 @@ import java.util.Random;
 
 public class UserUtil {
 
-    //�����û���
+    /**
+     * 生成用户名
+     * @param filmId 节目id
+     * @return 生成的用户名
+     */
     public static String generateUserName(String filmId){
         Date date = new Date();
         String dateTime = String.valueOf(date.getTime());
         return filmId+"_"+dateTime;
     }
 
-    //�����������
-
     /**
-     *
-     * @param n ���볤��
-     * @return
+     * 生成密码
+     * @param n 密码位数
+     * @return 生成的密码
      */
     public static String generatePass(int n){
         Random random = new Random();

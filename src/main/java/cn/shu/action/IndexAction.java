@@ -40,6 +40,12 @@ public class IndexAction {
     @Value("${expire-date}")
     private int expireDate;
     private static final Logger log = LoggerFactory.getLogger(IndexAction.class);
+
+    /**
+     * 处理登陆请求
+     * @param req request
+     * @return 随机字符串
+     */
     @GetMapping(value = "/login")
     public String login(HttpServletRequest req){
         HttpSession session = req.getSession();
@@ -51,10 +57,10 @@ public class IndexAction {
 
     /**
      * 验证用户名和密码是否正确有效
-     * @param name
-     * @param pass
-     * @param req
-     * @return
+     * @param name 用户名
+     * @param pass 加密的密码
+     * @param req request
+     * @return 验证结果
      */
     @GetMapping(value = "/loginValidate")
     public String loginValidate(@RequestParam("name") String name,
@@ -120,10 +126,10 @@ public class IndexAction {
 
     /**
      * 获取文件
-     * @param filmId
-     * @param fileName
-     * @param offset
-     * @param res
+     * @param filmId 节目id
+     * @param fileName 文件名
+     * @param offset 文件偏移量
+     * @param res response
      */
     @GetMapping(value = "/getFile")
     public void getFile(@RequestParam("filmId") String filmId,
@@ -174,8 +180,8 @@ public class IndexAction {
 
     /**
      * 上传文件
-     * @param path
-     * @param req
+     * @param path 文件路径
+     * @param req reuqest
      */
     @PostMapping(value = "/uploadFile")
     public void uploadFile(@RequestParam("path")String path, HttpServletRequest req){
@@ -214,8 +220,8 @@ public class IndexAction {
 
     /**
      * 返回节目相关文件
-     * @param filmId
-     * @return
+     * @param filmId 节目id
+     * @return 节目文件信息列表
      */
     @GetMapping(value = "/getFileList")
     public List<FilmFile> getFileList(@RequestParam("filmId") String filmId,
