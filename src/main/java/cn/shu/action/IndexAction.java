@@ -2,7 +2,6 @@ package cn.shu.action;
 
 import cn.shu.dao.FilmDao;
 import cn.shu.dao.FilmFileDao;
-import cn.shu.dao.TaskDao;
 import cn.shu.dao.UserDao;
 import cn.shu.entity.Film;
 import cn.shu.entity.FilmFile;
@@ -29,8 +28,7 @@ import java.util.List;
 
 @RestController
 public class IndexAction {
-    @Autowired
-    TaskDao taskDao;
+
     @Autowired
     UserDao userDao;
     @Autowired
